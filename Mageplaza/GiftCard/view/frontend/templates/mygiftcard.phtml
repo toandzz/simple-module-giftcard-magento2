@@ -1,0 +1,87 @@
+<?php
+/**
+ * @var Mageplaza\GiftCard\Block\MyGiftCard $block
+ */
+
+
+$balance = $block->getGiftCardBalance();
+$id = $block->getCustomerId();
+$valueRedeem = $block->getValueRedeem();
+$history = $block->getHistory();
+
+?>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .left {
+            width: 50%;
+            float: left;
+        }
+        .right {
+            width: 50%;
+            float: right;
+            text-align: right;
+        }
+        .page-title > span {
+            color: #5e5e5e;
+        }
+    </style>
+</head>
+<body>
+<h2 style="color: #999999; margin-bottom: 10px;">Gift Card Information</h2>
+<hr style="margin-top: 0;">
+<div style="margin-bottom: 70px">
+    <div class="left">
+        <b style="font-size: 20px">Balance</b>
+        <div style="color: #999999; margin-top: 15px;"><?= $balance ?></div>
+    </div>
+    <?php if($valueRedeem == 1): ?>
+        <div class="right">
+            <b style="font-size: 20px;">Redeem</b>
+            <div style="margin-top: 15px;">
+                <form action="<?= $block->getUrlRedeem() ?>" method="post">
+                    <input style="width: 150px;" type="text" placeholder="Enter gift card code" name="code">
+                    <button style="background-color: #1979c3; color: white">Redeem</button>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
+    <div style="clear: both"></div>
+</div>
+<div class="left">
+
+</div>
+<div class="table-wrapper downloadable-products">
+    <table id="my-downloadable-products-table" class="data table table-downloadable-products">
+        <div><h1 style="margin-bottom: 5px; color: #999999; display: inline; margin-right: 20px;">History</h1>
+            <thead>
+            <tr>
+                <th scope="col" class="col title"><?php echo __('Date') ?></th>
+                <th scope="col" class="col title"><?php echo __('Code') ?></th>
+                <th scope="col" class="col title"><?php echo __('Amount') ?></th>
+                <th scope="col" class="col actions"><?php echo __('Action') ?></th>
+            </tr>
+            </thead>
+            <body>
+            <?php foreach ($history as $key => $item): ?>
+                <tr>
+                    <td><?= $block->formatDateTime($item['action_time'])?></td>
+                    <td><?= $item['giftcard_code']?></td>
+                    <td><?= $block->formatPrice($item['amount'])?></td>
+                    <td><?= $item['action']?></td>
+                </tr>
+            <?php endforeach;?>
+            </body>
+        </div>
+    </table>
+</div>
+</body>
+</html>
+

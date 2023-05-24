@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Mageplaza_GiftCard::mageplaza" title="Mageplaza GiftCard" sortOrder="50">
+                    <resource id="Mageplaza_GiftCard::giftcard" title="GiftCard" sortOrder="50">
+                        <resource id="Mageplaza_GiftCard::managecode" title="Manage Codes" sortOrder="98">
+                            <resource id="Mageplaza_GiftCard::managecode::delete" title="Delete Codes"/>
+                            <resource id="Mageplaza_GiftCard::managecode::save" title="Save Codes"/>
+                            <resource id="Mageplaza_GiftCard::managecode::edit" title="Edit Codes"/>
+                            <resource id="Mageplaza_GiftCard::managecode::new" title="New Codes"/>
+                            <resource id="Mageplaza_GiftCard::managecode::view" title="View Codes"/>
+                            <resource id="Mageplaza_GiftCard::managecode::massdelete" title="Mass Action Delete Codes"/>
+                        </resource>
+                        <resource id="Mageplaza_GiftCard::configuration" title="Configuration" sortOrder="99" />
+                    </resource>
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="Mageplaza_GiftCard::giftcard_config" title="Gift Card Configuration"/>
+                        </resource>
+                    </resource>
+                </resource>
+
+            </resource>
+        </resources>
+    </acl>
+</config>
