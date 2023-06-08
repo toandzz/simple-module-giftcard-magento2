@@ -24,12 +24,15 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
         \Magento\Quote\Model\Quote\Address\Total $total
     )
     {
-        $checkModule = $this->helperData->getEnable();
+        $checkModule = $this->helperData->getAllowUse();
         if($checkModule == 1)
         {
             parent::collect($quote, $shippingAssignment, $total);
-            $giftcode = $quote->getCouponCode();
-            $baseDiscount = $this->_giftCardFactory->create()->load($giftcode,'code')->getData('balance');
+            $giftcode = $quote->getGiftcardCode();
+            $giftcard = $this->_giftCardFactory->create()->load($giftcode,'code');
+
+            $amount = $giftcard->getData('amount_used');
+            $baseDiscount = $giftcard->getData('balance') - $amount;
 
             $total->setGiftCardDiscount($this->_priceCurrency->convert($baseDiscount));
             $subTotal = $total->getSubtotal();
@@ -40,7 +43,8 @@ class Custom extends \Magento\Quote\Model\Quote\Address\Total\AbstractTotal
 
             $total->addTotalAmount('customdiscount', -$discount);
             $total->addBaseTotalAmount('customdiscount', -$baseDiscount);
-            $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscount);
+//            $total->setGrandTotal($total->getGrandTotal());
+//            $total->setBaseGrandTotal($total->getBaseGrandTotal());
             $quote->setCustomDiscount(-$discount);
             $total->setCustomDiscount($discount);
 

@@ -7,7 +7,7 @@
 $balance = $block->getGiftCardBalance();
 $id = $block->getCustomerId();
 $valueRedeem = $block->getValueRedeem();
-$history = $block->getHistory();
+$history = $block->getHistory()->getItems();
 ?>
 
 <!doctype html>

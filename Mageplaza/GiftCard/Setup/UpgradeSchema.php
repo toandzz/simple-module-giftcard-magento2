@@ -14,7 +14,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $installer->startSetup();
 
 
-        if(version_compare($context->getVersion(), '2.0.0', '<')) {
+        if(version_compare($context->getVersion(), '4.0.0', '<')) {
             $installer->getConnection()->addColumn(
                 $installer->getTable( 'customer_entity' ),
                 'giftcard_balance',
@@ -25,6 +25,32 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'comment' => 'Balance',
                     'after' => 'is_active'
                 ],
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable( 'giftcard_code'),
+                'status',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                    'nullable' => false,
+                    'default' => 0,
+                    'comment' => 'Status',
+                    'values' => [
+                        0 => 'Enabled',
+                        1 => 'Locked',
+                        2 => 'Disabled'
+                    ]
+                ]
+            );
+            $installer->getConnection()->addColumn(
+                $installer->getTable( 'quote' ),
+                'giftcard_code',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'nullable' => true,
+                    'size' => 255,
+                    'comment' => 'Gift Card Code',
+                    'after' => 'is_active'
+                ]
             );
             if (!$installer->tableExists('giftcard_history')) {
                 $table = $installer->getConnection()->newTable(

@@ -30,18 +30,24 @@ class CheckCode implements \Magento\Framework\Event\ObserverInterface
         $code = $controller->getRequest()->getParam('coupon_code');
         // Kiêm tra xem co code trong params khong
         if($code){
-            $giftcard_model = $this->giftcardFactory->create();
-            $giftcard_id = $giftcard_model->load($code,'code')->getId();
-            $giftcard_balance = $giftcard_model->load($code,'code')->getData('balance');
+            $giftcard_model = $this->giftcardFactory->create()->load($code,'code');
+            $giftcard_id = $giftcard_model->getId();
+            $giftcard_balance = $giftcard_model->getData('balance');
+            $amount_used = $giftcard_model->getData('amount_used');
+            $giftcard_status = $giftcard_model->getData('status');
             if ($giftcard_id) {
-                if($giftcard_balance > 0){
-                    $this->_messageManager->addSuccessMessage('Gift code applied successfully');
-                    $quote = $this->_checkoutSession->getQuote();
-                    $quote->setCouponCode($code);
-                    $quote->save();
-                    // case nay se dua ve luong su ly cua gc code
+                if($giftcard_status == 0){
+                    if($giftcard_balance - $amount_used > 0){
+                        $this->_messageManager->addSuccessMessage('Gift code applied successfully');
+                        $quote = $this->_checkoutSession->getQuote();
+                        $quote->setGiftcardCode($code);
+                        $quote->save();
+                        // case nay se dua ve luong su ly cua gc code
+                    }else{
+                        $this->_messageManager->addErrorMessage('This giftcode has expired');
+                    }
                 }else{
-                    $this->_messageManager->addErrorMessage('This giftcode has expired');
+                    $this->_messageManager->addErrorMessage('Gift code has been locked');
                 }
                 $this->actionFlag->set('', \Magento\Framework\App\Action\Action::FLAG_NO_DISPATCH, true);
                 $this->_redirect->redirect($controller->getResponse(),'checkout/cart');
@@ -49,7 +55,7 @@ class CheckCode implements \Magento\Framework\Event\ObserverInterface
             // case nay se dua ve luong su ly cua core
         }
         if ($controller->getRequest()->getParam('remove')) {
-            $this->_checkoutSession->getQuote()->setCouponCode('')->save();
+            $this->_checkoutSession->getQuote()->setGiftcardCode('')->save();
             // case nay se dua ve luong su ly cua core
         }
         // case nay se dua ve luong su ly cua core
