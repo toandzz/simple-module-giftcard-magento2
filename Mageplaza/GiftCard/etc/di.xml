@@ -12,5 +12,16 @@
             <argument name="resourceModel" xsi:type="string">Mageplaza\GiftCard\Model\ResourceModel\GiftCard</argument>
         </arguments>
     </virtualType>
-    
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="addGiftcard" xsi:type="object">Mageplaza\GiftCard\Console\AddGiftcard</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Checkout\Block\Cart\Coupon">
+        <plugin name="giftcard_code" type="Mageplaza\GiftCard\Plugin\GiftCardCode"/>
+    </type>
 </config>

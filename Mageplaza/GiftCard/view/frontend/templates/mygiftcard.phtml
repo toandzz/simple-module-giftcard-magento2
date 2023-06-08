@@ -8,7 +8,6 @@ $balance = $block->getGiftCardBalance();
 $id = $block->getCustomerId();
 $valueRedeem = $block->getValueRedeem();
 $history = $block->getHistory();
-
 ?>
 
 <!doctype html>
@@ -72,16 +71,20 @@ $history = $block->getHistory();
             <body>
             <?php foreach ($history as $key => $item): ?>
                 <tr>
-                    <td><?= $block->formatDateTime($item['action_time'])?></td>
-                    <td><?= $item['giftcard_code']?></td>
-                    <td><?= $block->formatPrice($item['amount'])?></td>
-                    <td><?= $item['action']?></td>
+                    <td><?= $block->formatDateTime($item->getActionTime())?></td>
+                    <td><?= $item->getGiftcardCode()?></td>
+                    <td><?= $block->formatPrice($item->getAmount())?></td>
+                    <td><?= $item->getAction()?></td>
                 </tr>
             <?php endforeach;?>
             </body>
         </div>
     </table>
 </div>
+<?php if ($block->getPagerHtml()) : ?>
+    <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
+<?php endif ?>
 </body>
 </html>
+
 

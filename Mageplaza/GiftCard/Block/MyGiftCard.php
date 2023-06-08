@@ -53,18 +53,17 @@ class MyGiftCard extends \Magento\Framework\View\Element\Template
         return $value;
     }
 
-    public function getHistory(){
-        $giftcard = $this->_giftcardFactory->create();
+    public function getHistory()
+    {
+        $page = ($this->getRequest()->getParam('p'))? $this->getRequest()->getParam('p') : 1;
+        $limit = ($this->getRequest()->getParam('limit'))? $this->getRequest()->getParam('limit') : 10;
         $customerId = $this->_currentCustomer->create()->getCustomer()->getId();
-        $collection = $this->_collectionFactory->create()->addFieldToFilter('customer_id',$customerId);
-        $data = $collection->getData();
+        $collection = $this->_collectionFactory->create();
+        $collection->addFieldToFilter('customer_id', $customerId)->setOrder('action_time','DESC');
+        $collection->setPageSize($limit);
+        $collection->setCurPage($page);
 
-        foreach($data as $key => $item){
-            $code = $giftcard->load($item['giftcard_id'])->getCode();
-            $data[$key]['giftcard_code'] = $code;
-        }
-
-        return $data;
+        return $collection;
     }
 
     public function getUrlRedeem(){
@@ -84,6 +83,25 @@ class MyGiftCard extends \Magento\Framework\View\Element\Template
         $format = str_replace(',','/', $date);
         $customFormat = str_replace(['d', 'm'], ['j', 'n'], $format);
         return $this->_timeZone->date(new \DateTime($time))->format($customFormat);
+    }
+    protected function _prepareLayout()
+    {
+        parent::_prepareLayout();
+        if ($this->getHistory()) {
+            $pager = $this->getLayout()->createBlock(
+                \Magento\Theme\Block\Html\Pager::class,
+                'giftcard.history.pager'
+            )->setCollection(
+                $this->getHistory()
+            );
+            $this->setChild('pager', $pager);
+            $this->getHistory()->load();
+        }
+        return $this;
+    }
 
+    public function getPagerHtml()
+    {
+        return $this->getChildHtml('pager');
     }
 }
